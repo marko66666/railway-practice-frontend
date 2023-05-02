@@ -1,24 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import React, { useState, useEffect } from "react";
 
 function App() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    getUsers();
+  }, []);
+
+  async function getUsers() {
+    try {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users`);
+      const data = await res.json();
+      setUsers(data);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      {users.map((user) => (
+        <div key={user.email}>
+          <p>{user.email}</p>
+          <p>{user.full_name}</p>
+          <br />
+        </div>
+      ))}
+    </>
   );
 }
 
